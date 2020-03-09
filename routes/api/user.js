@@ -47,7 +47,7 @@ router.post("/insert", (req, res) => {
 
   newUser
     .save()
-    .then(() => res.json("{ message: Successfully inserted }"))
+    .then(user => res.json(user))
     .catch(error => {
       console.error(error);
     });
@@ -66,7 +66,7 @@ router.post("/upload/:id", claims.single("claimImage"), (req, res, next) => {
     claimDate: Date.now
   };
 
-  User.findById(req.params.id)
+  User.findOne({ securityKey: req.params.id })
     .then(user => {
       user.claims.push(claim);
       console.log(user);

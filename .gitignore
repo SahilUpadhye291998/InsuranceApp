@@ -1,2 +1,6 @@
 node_modules
 ./secert/
+*.png
+ic_*.xml
+*gradle*
+*Manif*

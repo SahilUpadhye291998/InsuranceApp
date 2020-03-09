@@ -29,7 +29,7 @@ router.get("/getAll", (req, res) => {
 //@desc     To get the user
 //@access   PUBLIC
 router.get("/get/:id", (req, res) => {
-  User.findById(req.params.id)
+  User.findOne({ securityKey: validate.encryptMethod(req.params.id) })
     .then(user => res.json(user))
     .catch(err => console.log(err));
 });
@@ -61,16 +61,16 @@ router.post("/upload/:id", claims.single("claimImage"), (req, res, next) => {
     claimDesc: validate.encryptMethod(req.body.claimDesc),
     claimImagePath:
       "/home/xgod666/Documents/practise/projects/InsuranceApp/assets/upload/" +
-      req.params.id +
+      validate.encryptMethod(req.params.id) +
       ".png",
     claimDate: Date.now
   };
 
-  User.findOne({ securityKey: req.params.id })
+  User.findOne({ securityKey: validate.encryptMethod(req.params.id) })
     .then(user => {
       user.claims.push(claim);
       console.log(user);
-      User.findByIdAndUpdate(req.params.id, user)
+      User.findByIdAndUpdate(user._id, user)
         .then(() => res.json("{ message: Claim Added Successfully }"))
         .catch(error => {
           console.error(error);

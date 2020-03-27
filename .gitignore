@@ -6,3 +6,5 @@ ic_*.xml
 *Manif*
 backup
 Secert.js
+./.vscode
+./client/InsranceApp

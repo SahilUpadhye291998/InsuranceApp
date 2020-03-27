@@ -11,7 +11,12 @@ app.use(express.json());
 const db = require("./secert/keys").mongoURI;
 
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect(db, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+  })
   .then(() => {
     console.log(`Connection Successful`);
   })

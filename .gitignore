@@ -4,3 +4,5 @@ node_modules
 ic_*.xml
 *gradle*
 *Manif*
+backup
+Secert.js

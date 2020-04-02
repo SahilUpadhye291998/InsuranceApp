@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 //import user routes
 const user = require("./routes/api/user");
+const company = require("./routes/api/company");
 
 const app = express();
 app.use(express.json());
@@ -29,6 +30,7 @@ mongoose.set("useFindAndModify", false);
 const PORT = process.env.PORT || 3000;
 
 app.use("/api/user", user);
+app.use("/api/company",company);
 
 app.listen(PORT, (req, res, next) => {
   console.log(`Server started at port ${PORT}`);

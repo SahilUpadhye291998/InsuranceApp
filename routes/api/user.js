@@ -31,7 +31,8 @@ router.get("/getAll", (req, res) => {
 //@desc     To get the user
 //@access   PUBLIC
 router.get("/get/:id", checkAuth, (req, res) => {
-  User.findOne({ securityKey: req.params.id })
+  console.log(req.body);
+  User.findOne({ _id : req.params.id })
     .then(user => res.json(user))
     .catch(err => {
       console.log(err);
@@ -79,11 +80,12 @@ router.post("/login", (req, res) => {
           data: user
         },
         jwtSecret,
-        { expriresIn: "1h" }
+        { expiresIn: "1h" }
       );
       return res.status(200).json({
         message: "Record found",
-        token: token
+        token: token,
+        id: user._id
       });
     })
     .catch(err => {

@@ -4,27 +4,31 @@ let Company = mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   email: {
     type: String,
-    required: false
+    required: false,
   },
   securityKey: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+  },
+  amountWithCompany: {
+    type: Number,
+    require: true,
   },
   claims: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
+      ref: "User",
+    },
   ],
   date: {
     type: String,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = Company = mongoose.model("Company", User);

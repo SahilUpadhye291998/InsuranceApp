@@ -7,7 +7,6 @@ const company = require("./routes/api/company");
 
 const app = express();
 app.use(express.json());
-
 //connect to database
 const db = require("./secert/keys").mongoURI;
 

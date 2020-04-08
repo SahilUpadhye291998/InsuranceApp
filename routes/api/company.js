@@ -11,8 +11,8 @@ const Company = require("../../model/Company");
 router.get("/getAll", (req, res) => {
   Company.find()
     .sort({ date: -1 })
-    .then(company => res.json(company))
-    .catch(err => res.json(err));
+    .then((company) => res.json(company))
+    .catch((err) => res.json(err));
 });
 
 //@route    GET api/company/get/:id
@@ -20,8 +20,8 @@ router.get("/getAll", (req, res) => {
 //@access   PUBLIC
 router.get("/get/:id", checkAuth, (req, res) => {
   Company.findOne({ securityKey: req.params.id })
-    .then(company => res.json(company))
-    .catch(err => {
+    .then((company) => res.json(company))
+    .catch((err) => {
       console.log(err);
       res.status(500).json("{message: No record found}");
     });
@@ -35,18 +35,19 @@ router.post("/signup", (req, res) => {
   const newCompany = new Company({
     name: req.body.name,
     email: req.body.email,
-    securityKey: req.body.securityKey
+    securityKey: req.body.securityKey,
+    amountWithCompany: req.body.amountWithCompany,
   });
 
   newCompany
     .save()
-    .then(company =>
+    .then((company) =>
       res.status(200).json({
         message: "Company Registered Successfully",
-        company: company._id
+        company: company._id,
       })
     )
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
     });
 });
@@ -59,54 +60,50 @@ router.post("/login", (req, res) => {
 
   Company.findOne({
     name: req.body.name,
-    securityKey: req.body.securityKey
+    securityKey: req.body.securityKey,
   })
-    .then(company => {
+    .then((company) => {
       const token = jwt.sign(
         {
-          data: company
+          data: company,
         },
         jwtSecret,
-        { expriresIn: "1h" }
+        { expiresIn: "1h" }
       );
       return res.status(200).json({
         message: "Record found",
-        token: token
+        token: token,
+        _id: company._id,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({ message: "No record found" });
     });
 });
 
 //@route    POST api/company/get
 //@desc     To upload the claim
 //@access   PUBLIC
-router.post(
-  "/upload/:id",
-  claims.single("claimImage"),
-  checkAuth,
-  (req, res) => {
-    const updatedCompanyInfo = {
-      name: req.body.name,
-      email: req.body.email,
-      securityKey: req.body.securityKey
-    };
+router.post("/update/:id", checkAuth, (req, res) => {
+  const updatedCompanyInfo = {
+    name: req.body.name,
+    email: req.body.email,
+    securityKey: req.body.securityKey,
+  };
 
-    Company.findOne({ securityKey: req.params.id })
-      .then(company => {
-        Company.findByIdAndUpdate(company._id, updatedCompanyInfo)
-          .then(() => res.json("{ message: Claim Added Successfully }"))
-          .catch(error => {
-            console.error(error);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json("{message: No company found}");
-      });
-  }
-);
+  Company.findOne({ securityKey: req.params.id })
+    .then((company) => {
+      Company.findByIdAndUpdate(company._id, updatedCompanyInfo)
+        .then(() => res.json("{ message: Claim Added Successfully }"))
+        .catch((error) => {
+          console.error(error);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json("{message: No company found}");
+    });
+});
 
 module.exports = router;

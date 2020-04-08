@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callBack) => {
     callBack(null, req.params.id + ".png");
-  }
+  },
 });
 
 const claims = multer({ storage: storage });
@@ -23,8 +23,8 @@ const claims = multer({ storage: storage });
 router.get("/getAll", (req, res) => {
   User.find()
     .sort({ date: -1 })
-    .then(user => res.json(user))
-    .catch(err => res.json(err));
+    .then((user) => res.json(user))
+    .catch((err) => res.json(err));
 });
 
 //@route    GET api/user/get/:id
@@ -32,9 +32,9 @@ router.get("/getAll", (req, res) => {
 //@access   PUBLIC
 router.get("/get/:id", checkAuth, (req, res) => {
   console.log(req.body);
-  User.findOne({ _id : req.params.id })
-    .then(user => res.json(user))
-    .catch(err => {
+  User.findOne({ _id: req.params.id })
+    .then((user) => res.json(user))
+    .catch((err) => {
       console.log(err);
       res.status(500).json("{message: No record found}");
     });
@@ -48,18 +48,18 @@ router.post("/signup", (req, res) => {
   const newUser = new User({
     name: req.body.name,
     email: req.body.email,
-    securityKey: req.body.securityKey
+    securityKey: req.body.securityKey,
   });
 
   newUser
     .save()
-    .then(user =>
+    .then((user) =>
       res.status(200).json({
         message: "User Registered Successfully",
-        user: user._id
+        user: user._id,
       })
     )
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
     });
 });
@@ -72,12 +72,12 @@ router.post("/login", (req, res) => {
 
   User.findOne({
     name: req.body.name,
-    securityKey: req.body.securityKey
+    securityKey: req.body.securityKey,
   })
-    .then(user => {
+    .then((user) => {
       const token = jwt.sign(
         {
-          data: user
+          data: user,
         },
         jwtSecret,
         { expiresIn: "1h" }
@@ -85,12 +85,12 @@ router.post("/login", (req, res) => {
       return res.status(200).json({
         message: "Record found",
         token: token,
-        id: user._id
+        id: user._id,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({ message: "No record found" });
     });
 });
 
@@ -108,20 +108,20 @@ router.post(
         "/home/xgod666/Documents/practise/projects/InsuranceApp/assets/upload/" +
         req.params.id +
         ".png",
-      claimDate: Date.now
+      claimDate: Date.now,
     };
 
     User.findOne({ securityKey: req.params.id })
-      .then(user => {
+      .then((user) => {
         user.claims.push(claim);
         console.log(user);
         User.findByIdAndUpdate(user._id, user)
           .then(() => res.json("{ message: Claim Added Successfully }"))
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
           });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         res.status(500).json("{message: No user found}");
       });

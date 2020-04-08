@@ -5,6 +5,6 @@ ic_*.xml
 *gradle*
 *Manif*
 backup
-Secert.js
+keys.js
 ./.vscode
 ./client/InsranceApp

@@ -31,4 +31,4 @@ let Company = mongoose.Schema({
   },
 });
 
-module.exports = Company = mongoose.model("Company", User);
+module.exports = Company = mongoose.model("Company", Company);

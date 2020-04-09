@@ -4,6 +4,7 @@ const multer = require("multer");
 const jwt = require("jsonwebtoken");
 const jwtSecret = require("../../secert/keys").jwtSecret;
 const checkAuth = require("../../validation/checkAuth");
+const path = require("path");
 
 const User = require("../../model/User");
 const Company = require("../../model/Company");
@@ -12,7 +13,7 @@ const storage = multer.diskStorage({
     callBack(null, "./assets/upload/");
   },
   filename: (req, file, callBack) => {
-    callBack(null, req.params.id + ".png");
+    callBack(null, new Date().toISOString() + file.originalname);
   },
 });
 
@@ -178,10 +179,13 @@ router.post(
   claims.single("claimImage"),
   checkAuth,
   (req, res, next) => {
-    const newString = req.params.id + "_" + Date.now;
+    const newString = req.params.id + "_" + new Date().toString();
     const claim = {
       claimDesc: req.body.claimDesc,
-      claimImagePath: __dirname + "/assets/upload/" + newString + ".png",
+      claimImagePath:
+        path.join(__dirname, "..", "..", "assets", "upload/") +
+        newString +
+        ".png",
       claimDate: Date.now,
     };
 

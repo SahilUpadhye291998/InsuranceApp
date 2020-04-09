@@ -6,6 +6,7 @@ const jwtSecret = require("../../secert/keys").jwtSecret;
 const checkAuth = require("../../validation/checkAuth");
 
 const User = require("../../model/User");
+const Company = require("../../model/Company");
 const storage = multer.diskStorage({
   destination: (req, file, callBack) => {
     callBack(null, "./assets/upload/");
@@ -40,6 +41,80 @@ router.get("/get/:id", checkAuth, (req, res) => {
     });
 });
 
+//@route    GET api/user/get/:id
+//@desc     To get the user
+//@access   PUBLIC
+router.post("/payInsurance", checkAuth, (req, res) => {
+  console.log(req.body);
+  const id = req.body.id;
+  const compName = req.body.compName;
+  const premiumAmount = req.body.premiumAmount;
+  User.findOne({ _id: id })
+    .then((user) => {
+      user.paidAmount = user.paidAmount + parseInt(premiumAmount);
+      User.findByIdAndUpdate({ _id: user._id }, user)
+        .then(() => console.log("User Updated Successfully"))
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json({
+            message: "Some error has occured please contact web master",
+          });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json("{message: No record found}");
+    });
+
+  Company.findOne({
+    name: compName,
+  }).then((company) => {
+    company.amountWithCompany =
+      company.amountWithCompany + parseInt(premiumAmount);
+
+    Company.findByIdAndUpdate({ _id: company._id }, company)
+      .then((company) => {
+        console.log("Company Updated Successfully");
+        res.status(200).json({
+          message: "Update Successful",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({
+          message: "Some error has occured please contact web master",
+        });
+      });
+  });
+});
+
+router.post("/updateInsuranceAmount", checkAuth, (req, res) => {
+  console.log(req.body);
+  const id = req.body.id;
+  const amount = req.body.amount;
+  User.findOne({ _id: id })
+    .then((user) => {
+      user.amount = parseInt(amount);
+      User.findByIdAndUpdate({ _id: user._id }, user)
+        .then(() => {
+          console.log("User Updated Successfully");
+          res.status(200).json({
+            message: "User Policy is Updated Successfully",
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json({
+            message: "Some error has occured please contact web master",
+          });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json("{message: No record found}");
+    });
+});
+
 //@route    POST api/user/signup
 //@desc     To register the user
 //@access   PUBLIC
@@ -49,6 +124,7 @@ router.post("/signup", (req, res) => {
     name: req.body.name,
     email: req.body.email,
     securityKey: req.body.securityKey,
+    amount: 0,
   });
 
   newUser
@@ -100,7 +176,7 @@ router.post("/login", (req, res) => {
 router.post(
   "/upload/:id",
   claims.single("claimImage"),
-  checkAuth,
+  // checkAuth,
   (req, res, next) => {
     const claim = {
       claimDesc: req.body.claimDesc,
@@ -111,19 +187,19 @@ router.post(
       claimDate: Date.now,
     };
 
-    User.findOne({ securityKey: req.params.id })
+    User.findOne({ _id: req.params.id })
       .then((user) => {
         user.claims.push(claim);
         console.log(user);
         User.findByIdAndUpdate(user._id, user)
-          .then(() => res.json("{ message: Claim Added Successfully }"))
+          .then(() => res.json({ message: " Claim Added Successfully " }))
           .catch((error) => {
             console.error(error);
           });
       })
       .catch((err) => {
         console.log(err);
-        res.status(500).json("{message: No user found}");
+        res.status(500).json({ message: "No user found" });
       });
   }
 );

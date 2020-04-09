@@ -8,6 +8,7 @@ let User = mongoose.Schema({
   email: {
     type: String,
     required: false,
+    unique: true,
   },
   securityKey: {
     type: String,
@@ -18,15 +19,17 @@ let User = mongoose.Schema({
     type: Number,
     require: true,
   },
+  paidAmount: {
+    type: Number,
+    require: false,
+    default: 0,
+  },
   claims: [
     {
       claimDesc: String,
       claimImagePath: String,
       claimDate: Date,
-      claimAmount: {
-        type: Number,
-        require: false,
-      },
+      claimAmount: Number,
     },
   ],
   date: {

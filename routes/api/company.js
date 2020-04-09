@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = require("../../secert/keys").jwtSecret;
 const checkAuth = require("../../validation/checkAuth");
 const Company = require("../../model/Company");
+const User = require("../../model/User");
+const mongoose = require("mongoose");
 
 //@route    GET api/company/getAll
 //@desc     To get the company
@@ -104,6 +106,49 @@ router.post("/update/:id", checkAuth, (req, res) => {
       console.log(err);
       res.status(500).json("{message: No company found}");
     });
+});
+
+router.post("/acceptCompansation/:id", checkAuth, (req, res) => {
+  const claimID = req.params.id;
+  const userID = req.body.userID;
+  const compID = req.body.compID;
+  const compansationPersent = req.body.primeumPercent || 80;
+
+  User.findById({
+    _id: userID,
+  }).then((user) => {
+    console.log(user.claims);
+    user.claims.filter((claim, index) => {
+      if (claim._id == claimID) {
+        let userAmount = Math.min(user.amount, user.paidAmount);
+        userAmount = userAmount * (compansationPersent / 100);
+        user.claims[index].claimAmount = userAmount;
+        User.findByIdAndUpdate(user._id, user)
+          .then((updatedUser) => {
+            console.log("user Updated successful");
+            Company.findById({ _id: compID })
+              .then((company) => {
+                company.claims.push(updatedUser);
+                Company.findByIdAndUpdate(company._id, company).then(
+                  (updatedCompany) => {
+                    res.status(200).json({
+                      message: "User Compansated Successfully",
+                    });
+                  }
+                );
+              })
+              .catch((error) => {
+                res.status(200).json({
+                  message: "User Compansated Successfully",
+                });
+              });
+          })
+          .catch((error) => {
+            res.status(500).json({ message: "Some error has occured" });
+          });
+      }
+    });
+  });
 });
 
 module.exports = router;

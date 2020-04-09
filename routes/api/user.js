@@ -177,7 +177,7 @@ router.post("/login", (req, res) => {
 router.post(
   "/upload/:id",
   claims.single("claimImage"),
-  checkAuth,
+  //checkAuth,
   (req, res, next) => {
     const newString = req.params.id + "_" + new Date().toString();
     const claim = {
@@ -186,7 +186,7 @@ router.post(
         path.join(__dirname, "..", "..", "assets", "upload/") +
         newString +
         ".png",
-      claimDate: Date.now,
+      claimDate: Date.now(),
     };
 
     User.findOne({ _id: req.params.id })

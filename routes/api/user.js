@@ -180,7 +180,8 @@ router.post(
   (req, res, next) => {
     const claim = {
       claimDesc: req.body.claimDesc,
-      claimImagePath: __dirname + "/assets/upload/" + req.params.id + ".png",
+      claimImagePath:
+        __dirname + "/assets/upload/" + req.params.id + Date.now + ".png",
       claimDate: Date.now,
     };
 

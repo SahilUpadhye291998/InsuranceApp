@@ -176,12 +176,12 @@ router.post("/login", (req, res) => {
 router.post(
   "/upload/:id",
   claims.single("claimImage"),
-  // checkAuth,
+  checkAuth,
   (req, res, next) => {
+    const newString = req.params.id + "_" + Date.now;
     const claim = {
       claimDesc: req.body.claimDesc,
-      claimImagePath:
-        __dirname + "/assets/upload/" + req.params.id + "_" + Date.now + ".png",
+      claimImagePath: __dirname + "/assets/upload/" + newString + ".png",
       claimDate: Date.now,
     };
 

@@ -21,7 +21,7 @@ router.get("/getAll", (req, res) => {
 //@desc     To get the company
 //@access   PUBLIC
 router.get("/get/:id", checkAuth, (req, res) => {
-  Company.findOne({ securityKey: req.params.id })
+  Company.findOne({ _id: req.params.id })
     .then((company) => res.json(company))
     .catch((err) => {
       console.log(err);

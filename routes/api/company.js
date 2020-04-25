@@ -94,7 +94,7 @@ router.post("/update/:id", checkAuth, (req, res) => {
     securityKey: req.body.securityKey,
   };
 
-  Company.findOne({ securityKey: req.params.id })
+  Company.findOne({ _id : req.params.id })
     .then((company) => {
       Company.findByIdAndUpdate(company._id, updatedCompanyInfo)
         .then(() => res.json("{ message: Claim Added Successfully }"))

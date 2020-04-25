@@ -24,6 +24,10 @@ let User = mongoose.Schema({
     require: false,
     default: 0,
   },
+  companyID: {
+    type: String,
+    require: true,
+  },
   claims: [
     {
       claimDesc: String,

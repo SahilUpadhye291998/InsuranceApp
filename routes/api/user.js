@@ -42,6 +42,16 @@ router.get("/get/:id", checkAuth, (req, res) => {
     });
 });
 
+//@route    GET api/user/getUserAccordingToCompany/:id
+//@desc     To get the user
+//@access   PUBLIC
+router.get("/getUserAccordingToCompany/:companyID",(req, res) => {
+  console.log(req.params.id);
+  User.find( { companyID: req.params.companyID } )
+      .then((companys) => {console.log(companys);res.json(companys);})
+      .catch(error => res.json("{message: Some error has occured}"));
+});
+
 //@route    GET api/user/get/:id
 //@desc     To get the user
 //@access   PUBLIC
@@ -126,6 +136,7 @@ router.post("/signup", (req, res) => {
     email: req.body.email,
     securityKey: req.body.securityKey,
     amount: 0,
+    companyID: req.body.companyID
   });
 
   newUser

@@ -25,7 +25,7 @@ router.get("/get/:id", checkAuth, (req, res) => {
     .then((company) => res.json(company))
     .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({message: "No record found"});
     });
 });
 
@@ -51,6 +51,7 @@ router.post("/signup", (req, res) => {
     )
     .catch((error) => {
       console.error(error);
+      res.send(500).json({message:"Some error has occured"});
     });
 });
 
@@ -97,14 +98,15 @@ router.post("/update/:id", checkAuth, (req, res) => {
   Company.findOne({ _id : req.params.id })
     .then((company) => {
       Company.findByIdAndUpdate(company._id, updatedCompanyInfo)
-        .then(() => res.json("{ message: Claim Added Successfully }"))
+        .then(()=> res.send(200).json({message:"Claim added successfully"}))
         .catch((error) => {
           console.error(error);
+          res.status(500).json({ message: "Claim Not Added Successfully" });
         });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No company found}");
+      res.status(500).json({message:"No company found"});
     });
 });
 

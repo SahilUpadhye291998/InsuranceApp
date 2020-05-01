@@ -41,4 +41,3 @@ app.use("/api/company", company);
 app.listen(PORT, (req, res, next) => {
   console.log(`Server started at port ${PORT}`);
 });
-

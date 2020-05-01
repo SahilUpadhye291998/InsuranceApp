@@ -38,7 +38,7 @@ router.get("/get/:id", checkAuth, (req, res) => {
     .then((user) => res.json(user))
     .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({message:"No record found"});
     });
 });
 
@@ -48,8 +48,11 @@ router.get("/get/:id", checkAuth, (req, res) => {
 router.get("/getUserAccordingToCompany/:companyID",(req, res) => {
   console.log(req.params.id);
   User.find( { companyID: req.params.companyID } )
-      .then((companys) => {console.log(companys);res.json(companys);})
-      .catch(error => res.json("{message: Some error has occured}"));
+      .then((companys) => {
+          console.log(companys);
+          res.json(companys);
+      })
+      .catch(error => res.json({message: "Some error has occured"}));
 });
 
 //@route    GET api/user/get/:id
@@ -64,17 +67,18 @@ router.post("/payInsurance", checkAuth, (req, res) => {
     .then((user) => {
       user.paidAmount = user.paidAmount + parseInt(premiumAmount);
       User.findByIdAndUpdate({ _id: user._id }, user)
-        .then(() => console.log("User Updated Successfully"))
+        .then(() => {
+            console.log("User Updated Successfully");
+            res.json({message:"User Updated Successfully"});
+        })
         .catch((error) => {
           console.error(error);
-          res.status(500).json({
-            message: "Some error has occured please contact web master",
-          });
+          res.status(500).json({message: "Some error has occured please contact web master"});
         });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({message: "No record found"});
     });
 
   Company.findOne({
@@ -109,20 +113,16 @@ router.post("/updateInsuranceAmount", checkAuth, (req, res) => {
       User.findByIdAndUpdate({ _id: user._id }, user)
         .then(() => {
           console.log("User Updated Successfully");
-          res.status(200).json({
-            message: "User Policy is Updated Successfully",
-          });
+          res.status(200).json({message: "User Policy is Updated Successfully"});
         })
         .catch((error) => {
           console.error(error);
-          res.status(500).json({
-            message: "Some error has occured please contact web master",
-          });
+          res.status(500).json({message: "Some error has occured please contact web master"});
         });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json("{message: No record found}");
+      res.status(500).json({message:"No record found"});
     });
 });
 
@@ -149,6 +149,7 @@ router.post("/signup", (req, res) => {
     )
     .catch((error) => {
       console.error(error);
+      res.send(500).json({message:"Some error has occured"});
     });
 });
 
@@ -178,7 +179,7 @@ router.post("/login", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: "No record found" });
+      res.status(500).json({message: "No record found"});
     });
 });
 
@@ -205,9 +206,10 @@ router.post(
         user.claims.push(claim);
         console.log(user);
         User.findByIdAndUpdate(user._id, user)
-          .then(() => res.json({ message: " Claim Added Successfully " }))
+          .then(() => res.json({message: " Claim Added Successfully "}))
           .catch((error) => {
             console.error(error);
+            res.send(500).json({message:"Claim was not added successfully"})
           });
       })
       .catch((err) => {
